@@ -13,8 +13,11 @@ const cors = require('cors')
 const app = express();
 const dev_db_url = 'mongodb://allys00:ekki321@ds153730.mlab.com:53730/ekki';
 const mongoDB = process.env.MONGODB_URI || dev_db_url;
-
-mongoose.connect(mongoDB);
+const config = {
+  autoIndex: false,
+  useNewUrlParser: true,
+};
+mongoose.connect(mongoDB, { config });
 mongoose.Promise = global.Promise;
 
 const db = mongoose.connection;
@@ -38,7 +41,7 @@ app.use('/credit_card', credit_card);
 app.use('/account', account);
 app.use('/contact', contact);
 
-const port = 3030;
+const port = 8000;
 app.listen(port, () => {
   console.log('Server is up and running on port numner ' + port);
 });

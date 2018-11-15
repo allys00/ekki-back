@@ -24,7 +24,7 @@ exports.register = function (req, res) {
       return res.status(400).send({ status: 400, data: err })
     } else {
       req.session.userId = account._id;
-      return res.status(201).send(removePassword(account))
+      return res.status(201).send(account);
     }
   });
 }
@@ -50,6 +50,23 @@ exports.getUser = function (req, res, next) {
       } else {
         if (account === null) {
           return res.status(400).send("user not found")
+        } else {
+          let data = account.toObject()
+          delete data.password
+          return res.status(200).send(data)
+        }
+      }
+    })
+}
+
+exports.getUserByEmail = function (req, res, next) {
+  Account.findOne({ email: req.params.email })
+    .exec(function (error, account) {
+      if (error) {
+        return next(error);
+      } else {
+        if (account === null) {
+          return res.status(404).send("user not found")
         } else {
           let data = account.toObject()
           delete data.password
