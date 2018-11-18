@@ -13,10 +13,9 @@ exports.register = function (req, res) {
     email: req.body.email,
     name: req.body.name,
     password: req.body.password,
-    balance: 0,
+    balance: 100000,
     credit: 1000,
     credit_cards: [],
-    transfers: [],
     contacts: []
   });
   Account.create(accountData, function (err, account) {
@@ -33,6 +32,7 @@ exports.register = function (req, res) {
 
 exports.login = function (req, res, next) {
   Account.authenticate(req.body.email, req.body.password, function (error, account) {
+    console.log(account)
     if (error || !account) {
       return res.status(400).send("wrong email or password")
     } else {
@@ -93,6 +93,13 @@ exports.hasAuthenticated = function (req, res, next) {
       }
     });
 }
+
+exports.update = function (req, res) {
+  Account.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, transfer) {
+    if (err) return res.status(400).send(err);
+    res.status(200).send(transfer);
+  });
+};
 
 exports.logout = function (req, res, next) {
   if (req.session) {

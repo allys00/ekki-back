@@ -35,10 +35,6 @@ const AccountSchema = new Schema({
     type: Array,
     required: true
   },
-  transfers: {
-    type: Array,
-    required: true
-  },
   contacts: {
     type: Array,
     required: true
@@ -56,28 +52,35 @@ AccountSchema.statics.authenticate = function (email, password, callback) {
         return callback(err);
       }
       bcrypt.compare(password, accountData.password, function (err, result) {
+        console.log("PASSWORD WRONG", result)
         if (result === true) {
           let data = accountData.toObject()
           delete data.password
           return callback(null, data);
         } else {
-          return callback();
+          var err = new Error('wrong password');
+          return callback(err);
         }
       })
     });
 }
 
 
-AccountSchema.pre('save', function (next, acocunt) {
+AccountSchema.pre('save', function (next) {
   let account = this;
-  bcrypt.hash(account.password, 10, function (err, hash) {
-    if (err) {
-      console.log("error", err)
-      return next(err);
+  Account.findOne({ email: account.email }, function (err, response) {
+    if (!response) {
+      bcrypt.hash(account.password, 10, function (err, hash) {
+        if (err) {
+          return next(err);
+        }
+        account.password = hash;
+        delete account.passwordConf
+        next();
+      })
+    } else {
+      next();
     }
-    account.password = hash;
-    delete account.passwordConf
-    next();
   })
 });
 

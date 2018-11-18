@@ -5,8 +5,8 @@ const MongoStore = require('connect-mongo')(session);
 
 
 const credit_card = require('./routes/credit-card.route');
-const contact = require('./routes/contact.route');
 const account = require('./routes/account.route');
+const transfer = require('./routes/transfer.route');
 const mongoose = require('mongoose');
 const cors = require('cors')
 
@@ -39,7 +39,7 @@ app.use(session({
 
 app.use('/credit_card', credit_card);
 app.use('/account', account);
-app.use('/contact', contact);
+app.use('/transfer', transfer)
 
 const port = 8000;
 app.listen(port, () => {
