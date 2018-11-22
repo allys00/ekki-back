@@ -6,6 +6,7 @@ exports.create = function (req, res) {
             sender: req.body.sender,
             value: req.body.value,
             recipient: req.body.recipient,
+            credit: req.body.credit,
             created_at: new Date(),
         }
     );

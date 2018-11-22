@@ -14,7 +14,6 @@ exports.register = function (req, res) {
     name: req.body.name,
     password: req.body.password,
     balance: 100000,
-    credit: 1000,
     credit_cards: [],
     contacts: []
   });
@@ -32,7 +31,6 @@ exports.register = function (req, res) {
 
 exports.login = function (req, res, next) {
   Account.authenticate(req.body.email, req.body.password, function (error, account) {
-    console.log(account)
     if (error || !account) {
       return res.status(400).send("wrong email or password")
     } else {

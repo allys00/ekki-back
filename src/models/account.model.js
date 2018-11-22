@@ -27,10 +27,6 @@ const AccountSchema = new Schema({
     type: Number,
     required: true
   },
-  credit: {
-    type: Number,
-    required: true
-  },
   credit_cards: {
     type: Array,
     required: true
@@ -52,7 +48,6 @@ AccountSchema.statics.authenticate = function (email, password, callback) {
         return callback(err);
       }
       bcrypt.compare(password, accountData.password, function (err, result) {
-        console.log("PASSWORD WRONG", result)
         if (result === true) {
           let data = accountData.toObject()
           delete data.password

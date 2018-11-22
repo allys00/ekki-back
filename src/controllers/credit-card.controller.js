@@ -8,7 +8,7 @@ const getNumber = () => {
 }
 const getCvv = () => {
     const number = Math.floor((Math.random() * 1000) + 1)
-    return number > 99 ? number : Number`0${number}`
+    return number > 99 ? number : `0${number}`
 }
 
 const generateCreditCardNumber = () => {
@@ -28,7 +28,7 @@ exports.create = function (req, res) {
             number: String(generateCreditCardNumber()),
             cvv: String(getCvv()),
             expiration: getDateExpiration(),
-            credit: 1000,
+            credit: 100000,
             flag: req.body.flag,
             user_id: req.body.user_id,
             invoice: req.body.invoice,
