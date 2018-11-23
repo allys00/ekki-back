@@ -41,6 +41,7 @@ exports.login = function (req, res, next) {
 }
 
 exports.getUser = function (req, res, next) {
+  if (!req.params.id) return res.status(400).send("id inválido")
   Account.findById(req.params.id)
     .exec(function (error, account) {
       if (error) {

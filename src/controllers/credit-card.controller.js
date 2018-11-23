@@ -50,9 +50,10 @@ exports.details = function (req, res) {
 };
 
 exports.update = function (req, res) {
-    CreditCard.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, product) {
+    console.log(req.body)
+    CreditCard.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, credit_card) {
         if (err) return res.status(400).send(err);
-        res.send('Product udpated.');
+        res.status(200).send('update success');
     });
 };
 
