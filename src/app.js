@@ -11,7 +11,8 @@ const mongoose = require('mongoose');
 const cors = require('cors')
 
 const app = express();
-const dev_db_url = 'mongodb://allys00:ekki321@ds153730.mlab.com:53730/ekki';
+// const dev_db_url = 'mongodb://allys00:ekki321@ds153730.mlab.com:53730/ekki';
+const dev_db_url = 'mongodb://ekkibank:ekkibank321@ds115664.mlab.com:15664/ekkibank';
 const mongoDB = process.env.MONGODB_URI || dev_db_url;
 const config = {
   autoIndex: false,

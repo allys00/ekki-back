@@ -1,17 +1,12 @@
 const Account = require('../models/account.model');
-const transport = require('../app').transport
+const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer');
 
 
 exports.register = function (req, res) {
-
   if (req.body.password !== req.body.passwordConf) {
-    let err = new Error('Passwords do not match.');
-    err.status = 400;
-    res.send("passwords dont match");
-    return next(err);
+    res.status(400).send("passwords dont match");
   }
-
   const accountData = new Account({
     email: req.body.email,
     name: req.body.name,
@@ -20,7 +15,7 @@ exports.register = function (req, res) {
     credit_cards: [],
     contacts: []
   });
-  Account.create(accountData, function (err, account) {
+  Account.create(accountData, (err, account) => {
     if (err) {
       return res.status(400).send({ status: 400, data: err })
     } else {
@@ -30,32 +25,43 @@ exports.register = function (req, res) {
   });
 }
 
-exports.forgotPassword = function (req, res) {
-  console.log(req.body.email)
-  const transport = nodemailer.createTransport({
-    host: "smtp.mailtrap.io",
-    port: 2525,
-    auth: {
-      user: "d1e0d2595cd78a",
-      pass: "180fca721d20e4"
-    }
-  });
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body
+    const user = await Account.findOne({ email })
+    if (!user) return res.status(404).send("User not found")
+    const password = Math.random().toString(36).slice(-8);
+    const newPassword = await bcrypt.hash(password, 10);
+    await Account.findByIdAndUpdate(user._id, {
+      '$set': {
+        password: newPassword
+      }
+    })
+    var transport = nodemailer.createTransport({
+      host: "smtp.mailtrap.io",
+      port: 2525,
+      auth: {
+        user: "405f7b250dd909",
+        pass: "16dd3740841f21"
+      }
+    });
+    let mailOptions = {
+      from: 'ekkibank@gmail.com',
+      to: email,
+      subject: 'Hello ✔',
+      text: `Sua nova senha é : ${password}`,
+    };
 
-  let mailOptions = {
-    from: 'Banco Ekki',
-    to: req.body.email,
-    subject: 'Hello ✔',
-    text: 'Hello world?',
-    html: '<b>Hello world?</b>'
-  };
+    transport.sendMail(mailOptions, (error) => {
+      if (error) {
+        return console.log(error);
+      }
+      res.status(200).send("Email enviado")
+    });
+  } catch (err) {
+    res.status(400).send("Erro on forgot password, try again")
+  }
 
-  transport.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      return console.log(error);
-    }
-    console.log('Message sent: %s', info.messageId);
-    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-  });
 }
 
 
@@ -72,7 +78,7 @@ exports.login = function (req, res, next) {
 }
 
 exports.getUser = function (req, res, next) {
-  if (!req.params.id) return res.status(400).send("id inválido")
+  if (!req.params.id) return res.status(400).send("you need send id")
   Account.findById(req.params.id)
     .exec(function (error, account) {
       if (error) {
