@@ -1,4 +1,7 @@
 const Account = require('../models/account.model');
+const transport = require('../app').transport
+const nodemailer = require('nodemailer');
+
 
 exports.register = function (req, res) {
 
@@ -24,6 +27,34 @@ exports.register = function (req, res) {
       req.session.userId = account._id;
       return res.status(201).send(account);
     }
+  });
+}
+
+exports.forgotPassword = function (req, res) {
+  console.log(req.body.email)
+  const transport = nodemailer.createTransport({
+    host: "smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: "d1e0d2595cd78a",
+      pass: "180fca721d20e4"
+    }
+  });
+
+  let mailOptions = {
+    from: 'Banco Ekki',
+    to: req.body.email,
+    subject: 'Hello ✔',
+    text: 'Hello world?',
+    html: '<b>Hello world?</b>'
+  };
+
+  transport.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log(error);
+    }
+    console.log('Message sent: %s', info.messageId);
+    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
   });
 }
 

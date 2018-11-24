@@ -79,7 +79,13 @@ TransferSchema.post('save', function (transfer, next) {
             })
           })
         })
+      } else {
+        requestSuccess++
+        if (requestSuccess === 2) next()
       }
+    } else {
+      requestSuccess++
+      if (requestSuccess === 2) next()
     }
   })
 
