@@ -1,12 +1,12 @@
 ## Scripts
 
-Com diretório baixado rode:
+with directory downloaded, run this command.
 
 ### `yarn | yarn install`
 
-Para instalar os pacotes
+Install Packages
 
 ### `yarn dev `
 
-Para rodar o projeto
+Run project
 
